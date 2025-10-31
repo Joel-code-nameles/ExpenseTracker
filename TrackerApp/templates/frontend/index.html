@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker — Dashboard</title>
+  <style>
+    /* ===== Root Variables ===== */
+    :root {
+      --bg: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%);
+      --card-bg: rgba(255, 255, 255, 0.6);
+      --border: rgba(255, 255, 255, 0.4);
+      --accent: #6c63ff;
+      --accent-2: #40c9a2;
+      --delete: #ff4b5c;
+      --text: #1a1f36;
+      --muted: #6b7280;
+      --radius: 20px;
+      --blur: 20px;
+      --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* ===== Base Styles ===== */
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+      font-family: var(--font);
+    }
+
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text);
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Navigation Bar ===== */
+    .navbar {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      padding: 20px 10%;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    /* ===== Container ===== */
+    .container {
+      margin-top: 50px;
+      width: 90%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Card (Glassmorphism) ===== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* ===== Form Section ===== */
+    .form-section h2 {
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: none;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: white;
+      padding: 14px 0;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(108, 99, 255, 0.4);
+    }
+
+    .message {
+      margin-top: 10px;
+      color: #e63946;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    /* ===== Table Section ===== */
+    .table-section h2 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(15px);
+      box-shadow: var(--shadow);
+      font-size: 15px;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(108, 99, 255, 0.1);
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+    }
+
+    tr:hover {
+      background: rgba(108, 99, 255, 0.05);
+      transition: 0.3s;
+    }
+
+    .btn-delete {
+      background: linear-gradient(90deg, #ff4b5c, #ff6b6b);
+      border: none;
+      color: white;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-delete:hover {
+      transform: scale(1.05);
+      box-shadow: 0 3px 8px rgba(255, 75, 92, 0.4);
+    }
+
+    td.note {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="navbar">💼 Expense Tracker Dashboard</div>
+
+  <div class="container">
+    <!-- Add Expense Section -->
+    <div class="card form-section">
+      <h2>Add New Expense</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="text" name="expenses" placeholder="Expense title">
+          <input type="text" name="amount" placeholder="Amount (₵)">
+          <input type="text" name="category" placeholder="Category (Food, Transport...)">
+          <textarea name="note" placeholder="Add notes..."></textarea>
+        </div>
+        <button class="btn">+ Save Expense</button>
+        {% for message in messages %}
+          <p class="message">{{ message }}</p>
+        {% endfor %}
+      </form>
+    </div>
+
+    <!-- Table Section -->
+    <div class="card table-section">
+      <h2>Recent Expenses</h2>
+      <table>
+        <tr>
+          <th>Expense</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th>Note</th>
+          <th>Action</th>
+        </tr>
+
+        {% for item in expenses_list %}
+        <tr>
+          <td>{{ item.expenses }}</td>
+          <td>₵{{ item.amount }}</td>
+          <td>{{ item.category }}</td>
+          <td class="note">{{ item.note }}</td>
+          <td>
+            <a href="{% url 'delete_expense' item.id %}">
+              <button type="button" class="btn-delete">Delete</button>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center; color: var(--muted); padding: 20px;">
+            No expenses yet — start tracking!
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</body>
+</html>
